@@ -3,14 +3,16 @@ package com.example.practika.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.practika.screens.CallingScreen
 import com.example.practika.screens.HomeScreen
 import com.example.practika.screens.InCallScreen
 import com.example.practika.screens.LandingScreen
 import com.example.practika.screens.LoginScreen
-import com.example.practika.screens.RegistrationScreen
+import com.example.practika.screens.OtpScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -30,26 +32,23 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Screen.Login.route) {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Registration.route)
+                onNavigateToOtp = {
+                    navController.navigate(Screen.Otp.createRoute(it))
                 }
             )
         }
 
-        composable(route = Screen.Registration.route) {
-            RegistrationScreen(
-                onRegistrationSuccess = {
+        composable(
+            route = Screen.Otp.route,
+            arguments = listOf(navArgument("phoneNumber") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
+            OtpScreen(
+                phoneNumber = phoneNumber,
+                onOtpVerified = {
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Registration.route) { inclusive = true }
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
-                },
-                onNavigateToLogin = {
-                    navController.popBackStack()
                 }
             )
         }

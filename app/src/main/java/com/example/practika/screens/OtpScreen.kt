@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,10 +34,11 @@ import com.example.practika.theme.LightBlue
 import com.example.practika.theme.PrimaryColor
 
 @Composable
-fun LoginScreen(
-    onNavigateToOtp: (String) -> Unit
+fun OtpScreen(
+    phoneNumber: String,
+    onOtpVerified: () -> Unit
 ) {
-    var phoneNumber by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -47,13 +49,13 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Hello there",
+            text = "Verify your number",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Enter your phone number to continue",
+            text = "Enter the OTP sent to $phoneNumber",
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             color = Color.Gray
@@ -62,12 +64,12 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(48.dp))
 
         OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Phone Number") },
+            value = otp,
+            onValueChange = { otp = it },
+            label = { Text("OTP") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
@@ -78,15 +80,21 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onNavigateToOtp(phoneNumber) },
+            onClick = { onOtpVerified() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            enabled = phoneNumber.isNotBlank(),
+            enabled = otp.isNotBlank(),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryColor)
         ) {
-            Text("Continue", color = Color.White, fontSize = 16.sp)
+            Text("Verify", color = Color.White, fontSize = 16.sp)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(onClick = { /* TODO: Implement Resend OTP */ }) {
+            Text("Didn't receive an OTP? Resend")
         }
     }
 }

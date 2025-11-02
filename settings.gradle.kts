@@ -19,5 +19,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Practika"
 include(":app")

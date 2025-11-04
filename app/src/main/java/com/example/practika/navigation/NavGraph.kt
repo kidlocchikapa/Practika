@@ -1,18 +1,14 @@
-// navigation/NavGraph.kt
 package com.example.practika.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.practika.screens.CallingScreen
-import com.example.practika.screens.HomeScreen
-import com.example.practika.screens.InCallScreen
-import com.example.practika.screens.LandingScreen
-import com.example.practika.screens.LoginScreen
-import com.example.practika.screens.OtpScreen
+import com.example.practika.data.UserData
+import com.example.practika.screens.*
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -21,21 +17,13 @@ fun NavGraph(navController: NavHostController) {
         startDestination = Screen.Landing.route
     ) {
         composable(route = Screen.Landing.route) {
-            LandingScreen(
-                onTimeout = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Landing.route) { inclusive = true }
-                    }
-                }
-            )
+            LandingScreen(onTimeout = { navController.navigate(Screen.Login.route) })
         }
 
         composable(route = Screen.Login.route) {
-            LoginScreen(
-                onNavigateToOtp = {
-                    navController.navigate(Screen.Otp.createRoute(it))
-                }
-            )
+            LoginScreen(onNavigateToOtp = { phoneNumber ->
+                navController.navigate(Screen.Otp.createRoute(phoneNumber))
+            })
         }
 
         composable(
@@ -46,34 +34,61 @@ fun NavGraph(navController: NavHostController) {
             OtpScreen(
                 phoneNumber = phoneNumber,
                 onOtpVerified = {
+                    UserData.phoneNumber = phoneNumber // Save the phone number
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                        // Clear back stack to prevent going back to auth flow
+                        popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                     }
                 }
             )
         }
 
+        // Main app screens with bottom navigation
         composable(route = Screen.Home.route) {
             HomeScreen(
-                onLogout = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onNavigateToCalling = {
-                    navController.navigate(Screen.Calling.route)
+                onNavigateToProviderList = { navController.navigate(Screen.ProviderList.route) },
+                onNavigateToCategoryList = { navController.navigate(Screen.CategoryList.route) },
+                onNavigateToGentTalk = { navController.navigate(Screen.Chat.route) }
+            )
+        }
+
+        composable(route = Screen.ProviderList.route) {
+            ProviderListScreen(
+                onNavigateToCall = { providerName ->
+                    navController.navigate(Screen.LiveCall.createRoute(providerName))
                 }
             )
         }
 
-        composable(route = Screen.Calling.route) {
-            CallingScreen()
+        composable(route = Screen.CategoryList.route) {
+            CategoryListScreen(onNavigateToCall = { providerName ->
+                navController.navigate(Screen.LiveCall.createRoute(providerName))
+            })
         }
 
-        composable(route = Screen.InCall.route) {
-            InCallScreen()
+        composable(
+            route = Screen.LiveCall.route,
+            arguments = listOf(navArgument("providerName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val providerName = backStackEntry.arguments?.getString("providerName") ?: ""
+            LiveCallScreen(
+                providerName = providerName,
+                onHangup = { navController.popBackStack() },
+                onChatWithGentTalk = { navController.navigate(Screen.Chat.route) }
+            )
         }
 
-        // Add other screens here as you develop them
+        composable(route = Screen.Chat.route) {
+            ChatScreen()
+        }
+
+        composable(route = Screen.More.route) {
+            MoreScreen(onLogout = {
+                navController.navigate(Screen.Login.route) {
+                    // Clear the entire back stack
+                    popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                }
+            })
+        }
     }
 }

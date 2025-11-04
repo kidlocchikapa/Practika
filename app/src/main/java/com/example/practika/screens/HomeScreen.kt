@@ -35,6 +35,9 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+// This local data class was causing conflicts. It is now removed.
+// The app will use the CallHistory data class from the central DataSource.kt
+
 data class CTACard(
     val imageUrl: String,
     val contentDescription: String
@@ -201,7 +204,7 @@ fun QuickActionsCard(
             .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFEEEEEE))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant) // Theme-aware color
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -261,7 +264,7 @@ fun QuickActionItem(icon: ImageVector, label: String, onClick: () -> Unit) {
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = Color.Black,
+                tint = MaterialTheme.colorScheme.onSurface, // Theme-aware tint
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -282,7 +285,7 @@ fun CallHistoryItem(callHistory: CallHistory) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFEEEEEE))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant) // Theme-aware color
     ) {
         Row(
             modifier = Modifier
@@ -325,7 +328,7 @@ fun CallHistoryItem(callHistory: CallHistory) {
                     Text(
                         text = callHistory.category,
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -341,7 +344,7 @@ fun CallHistoryItem(callHistory: CallHistory) {
                 Text(
                     text = SimpleDateFormat("MMM d", Locale.getDefault()).format(callHistory.date),
                     fontSize = 13.sp,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

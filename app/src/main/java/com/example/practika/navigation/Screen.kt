@@ -8,10 +8,13 @@ sealed class Screen(val route: String) {
     }
     object Home : Screen("home")
     object Chat : Screen("chat")
-    object More : Screen("more") // Changed from Profile
+    object More : Screen("more")
     object ProviderList : Screen("provider_list")
     object CategoryList : Screen("category_list")
     object LiveCall : Screen("live_call/{providerName}") {
         fun createRoute(providerName: String) = "live_call/$providerName"
+    }
+    object InCall : Screen("in_call/{providerName}") {
+        fun createRoute(providerName: String) = "in_call/$providerName"
     }
 }

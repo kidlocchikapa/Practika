@@ -30,6 +30,7 @@ import com.example.practika.data.allProviders
 import com.example.practika.navigation.NavGraph
 import com.example.practika.navigation.Screen
 import com.example.practika.theme.PractikaTheme
+import com.example.practika.theme.PrimaryLight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +76,7 @@ fun MainScreen() {
             if (showNavBars) {
                 AppBottomNavBar(currentDestination, bottomNavItems) {
                     navController.navigate(it) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -115,7 +114,7 @@ fun AppTopAppBar(navController: NavController) {
                     },
                     modifier = Modifier
                         .padding(end = 16.dp)
-                        .width(180.dp) // Made search bar smaller
+                        .width(180.dp)
                         .background(Color.White.copy(alpha = 0.15f), CircleShape)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     singleLine = true,
@@ -152,7 +151,7 @@ fun AppTopAppBar(navController: NavController) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = PrimaryLight // Always use the light theme primary color
         )
     )
 }
@@ -163,7 +162,7 @@ fun AppBottomNavBar(
     items: List<BottomNavItem>,
     onNavigate: (String) -> Unit
 ) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
+    NavigationBar(containerColor = PrimaryLight) { // Always use the light theme primary color
         items.forEach { item ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
             NavigationBarItem(

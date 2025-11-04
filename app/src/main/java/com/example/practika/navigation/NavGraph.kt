@@ -1,6 +1,7 @@
 package com.example.practika.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.practika.data.UserData
 import com.example.practika.screens.*
+import kotlinx.coroutines.delay
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -34,16 +36,14 @@ fun NavGraph(navController: NavHostController) {
             OtpScreen(
                 phoneNumber = phoneNumber,
                 onOtpVerified = {
-                    UserData.phoneNumber = phoneNumber // Save the phone number
+                    UserData.phoneNumber = phoneNumber
                     navController.navigate(Screen.Home.route) {
-                        // Clear back stack to prevent going back to auth flow
                         popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                     }
                 }
             )
         }
 
-        // Main app screens with bottom navigation
         composable(route = Screen.Home.route) {
             HomeScreen(
                 onNavigateToProviderList = { navController.navigate(Screen.ProviderList.route) },
@@ -71,10 +71,29 @@ fun NavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("providerName") { type = NavType.StringType })
         ) { backStackEntry ->
             val providerName = backStackEntry.arguments?.getString("providerName") ?: ""
+            LaunchedEffect(key1 = providerName) {
+                delay(3000) // Simulate call connecting
+                navController.navigate(Screen.InCall.createRoute(providerName)) {
+                    popUpTo(Screen.LiveCall.route) { inclusive = true } // Replace connecting screen
+                }
+            }
             LiveCallScreen(
                 providerName = providerName,
                 onHangup = { navController.popBackStack() },
                 onChatWithGentTalk = { navController.navigate(Screen.Chat.route) }
+            )
+        }
+
+        composable(
+            route = Screen.InCall.route,
+            arguments = listOf(navArgument("providerName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val providerName = backStackEntry.arguments?.getString("providerName") ?: ""
+            InCallScreen(
+                providerName = providerName,
+                onHangup = { navController.navigate(Screen.Home.route) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                } }
             )
         }
 
@@ -85,7 +104,6 @@ fun NavGraph(navController: NavHostController) {
         composable(route = Screen.More.route) {
             MoreScreen(onLogout = {
                 navController.navigate(Screen.Login.route) {
-                    // Clear the entire back stack
                     popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                 }
             })

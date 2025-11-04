@@ -41,7 +41,3 @@ val allCategories = listOf(
 fun getProvidersForCategory(categoryName: String): List<Provider> {
     return allProviders.filter { it.category == categoryName }
 }
-
-object UserData {
-    var phoneNumber: String? = null
-}

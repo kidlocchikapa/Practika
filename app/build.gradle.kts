@@ -41,7 +41,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+        // kotlinCompilerExtensionVersion is now managed by the Compose BOM
     }
     packaging {
         resources {
@@ -65,6 +65,9 @@ dependencies {
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 
     // Other
     implementation("androidx.compose.material:material-icons-extended")

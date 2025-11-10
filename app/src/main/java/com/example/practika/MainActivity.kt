@@ -100,9 +100,19 @@ fun AppTopAppBar(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf(listOf<com.example.practika.data.Provider>()) }
     var isSearchDropdownExpanded by remember { mutableStateOf(false) }
+    val isDark = ThemeManager.isDarkTheme.value
+    val colorScheme = MaterialTheme.colorScheme
 
     TopAppBar(
-        title = { Text("Gentcaller", fontWeight = FontWeight.Bold, color = Color.White) },
+        title = { 
+            Text(
+                "Gentcaller",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = if (isDark) Color.White else Color.White
+                )
+            )
+        },
         actions = {
             Box {
                 BasicTextField(
@@ -119,17 +129,28 @@ fun AppTopAppBar(navController: NavController) {
                     modifier = Modifier
                         .padding(end = 16.dp)
                         .width(180.dp)
-                        .background(Color.White.copy(alpha = 0.15f), CircleShape)
+                        .background(
+                            if (isDark) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.15f),
+                            CircleShape
+                        )
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     singleLine = true,
-                    textStyle = TextStyle(color = Color.White),
+                    textStyle = TextStyle(color = if (isDark) Color.White else Color.White),
                     decorationBox = { innerTextField ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.Search, contentDescription = "Search", tint = Color.White.copy(alpha = 0.8f))
+                            Icon(
+                                Icons.Outlined.Search, 
+                                contentDescription = "Search", 
+                                tint = if (isDark) Color.White.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.8f)
+                            )
                             Spacer(Modifier.width(8.dp))
                             Box {
                                 if (searchQuery.isEmpty()) {
-                                    Text("search provider", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+                                    Text(
+                                        "search provider", 
+                                        color = if (isDark) Color.White.copy(alpha = 0.7f) else Color.White.copy(alpha = 0.8f),
+                                        fontSize = 14.sp
+                                    )
                                 }
                                 innerTextField()
                             }
@@ -155,7 +176,7 @@ fun AppTopAppBar(navController: NavController) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = PrimaryLight // Always use the light theme primary color
+            containerColor = if (isDark) BackgroundDark else PrimaryLight
         )
     )
 }
@@ -166,22 +187,45 @@ fun AppBottomNavBar(
     items: List<BottomNavItem>,
     onNavigate: (String) -> Unit
 ) {
-    NavigationBar(containerColor = PrimaryLight) { // Always use the light theme primary color
+    val isDark = ThemeManager.isDarkTheme.value
+    
+    NavigationBar(
+        containerColor = if (isDark) BackgroundDark else PrimaryLight
+    ) {
         items.forEach { item ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
             NavigationBarItem(
                 selected = isSelected,
                 onClick = { onNavigate(item.route) },
-                label = { Text(item.label, color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)) },
+                label = { 
+                    Text(
+                        item.label, 
+                        color = if (isDark) {
+                            if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
+                        } else {
+                            if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
+                        }
+                    ) 
+                },
                 icon = {
                     Icon(
                         imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                         contentDescription = item.label,
-                        tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
+                        tint = if (isDark) {
+                            if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
+                        } else {
+                            if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
+                        }
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color.White.copy(alpha = 0.15f)
+                    indicatorColor = if (isDark) {
+                        Color.White.copy(alpha = 0.08f)
+                    } else {
+                        Color.White.copy(alpha = 0.15f)
+                    },
+                    selectedIconColor = if (isDark) Color.White else Color.White,
+                    unselectedIconColor = if (isDark) Color.White.copy(alpha = 0.7f) else Color.White.copy(alpha = 0.7f)
                 )
             )
         }

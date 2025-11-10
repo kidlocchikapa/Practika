@@ -1,7 +1,6 @@
 package com.example.practika.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -10,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.practika.data.UserData
 import com.example.practika.screens.*
-import kotlinx.coroutines.delay
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -71,16 +69,14 @@ fun NavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("providerName") { type = NavType.StringType })
         ) { backStackEntry ->
             val providerName = backStackEntry.arguments?.getString("providerName") ?: ""
-            LaunchedEffect(key1 = providerName) {
-                delay(3000) // Simulate call connecting
-                navController.navigate(Screen.InCall.createRoute(providerName)) {
-                    popUpTo(Screen.LiveCall.route) { inclusive = true } // Replace connecting screen
-                }
-            }
             LiveCallScreen(
                 providerName = providerName,
                 onHangup = { navController.popBackStack() },
-                onChatWithGentTalk = { navController.navigate(Screen.Chat.route) }
+                onNavigateToInCall = { 
+                    navController.navigate(Screen.InCall.createRoute(providerName)) {
+                        popUpTo(Screen.LiveCall.route) { inclusive = true } 
+                    }
+                }
             )
         }
 

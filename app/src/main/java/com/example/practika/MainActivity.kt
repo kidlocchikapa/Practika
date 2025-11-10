@@ -35,6 +35,10 @@ import com.example.practika.theme.PrimaryLight
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Register phone account for in-app calling
+        CallManager.registerPhoneAccount(this)
+        
         setContent {
             PractikaTheme {
                 MainScreen()

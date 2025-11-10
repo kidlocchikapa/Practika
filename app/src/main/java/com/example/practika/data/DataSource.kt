@@ -1,10 +1,8 @@
 package com.example.practika.data
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.LocalHospital
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.practika.R
 import java.util.Date
@@ -32,10 +30,18 @@ val allProviders = listOf(
 )
 
 val allCategories = listOf(
-    Category(name = "Mobile Networks", icon = Icons.Default.Phone),
-    Category(name = "Security", icon = Icons.Default.Security),
-    Category(name = "Health", icon = Icons.Default.LocalHospital),
-    Category(name = "Utilities", icon = Icons.Default.Business)
+    Category(name = "Mobile Networks", icon = Icons.Filled.Phone),
+    Category(name = "Security", icon = Icons.Filled.Security),
+    Category(name = "Health", icon = Icons.Filled.LocalHospital),
+    Category(name = "Utilities", icon = Icons.Filled.ElectricBolt),
+    Category(name = "Emergency", icon = Icons.Filled.Emergency),
+    Category(name = "Banking", icon = Icons.Filled.AccountBalance),
+    Category(name = "Transport", icon = Icons.Filled.DirectionsCar),
+    Category(name = "Education", icon = Icons.Filled.School),
+    Category(name = "Government", icon = Icons.Filled.AccountBalance),
+    Category(name = "Insurance", icon = Icons.Filled.Shield),
+    Category(name = "Internet", icon = Icons.Filled.Wifi),
+    Category(name = "Water", icon = Icons.Filled.Water)
 )
 
 fun getProvidersForCategory(categoryName: String): List<Provider> {

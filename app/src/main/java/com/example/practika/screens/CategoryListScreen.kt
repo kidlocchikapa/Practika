@@ -73,7 +73,24 @@ fun ExpandableCategory(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = categoryName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    // Category Icon
+                    val category = allCategories.find { it.name == categoryName }
+                    category?.let { 
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = "$categoryName Icon",
+                            modifier = Modifier
+                                .size(32.dp)
+                                .padding(end = 16.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Text(text = categoryName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                }
                 Icon(
                     imageVector = Icons.Outlined.ArrowDropDown,
                     contentDescription = if (isExpanded) "Collapse" else "Expand",
